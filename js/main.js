@@ -45,17 +45,30 @@ function initMobileMenu() {
 
   if (!menuToggle || !navLinks) return;
 
+  // Create premium mobile backdrop dimmer layer
+  const backdrop = document.createElement('div');
+  backdrop.className = 'menu-backdrop';
+  document.body.appendChild(backdrop);
+
   const toggleMenu = () => {
     navLinks.classList.toggle('nav-active');
-    // Rotate toggle lines (done via JS helper classes if styled, or simple toggles)
     menuToggle.classList.toggle('toggle-active');
+    backdrop.classList.toggle('backdrop-active');
     
     // Toggle menu state accessibility attributes
     const expanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
     menuToggle.setAttribute('aria-expanded', !expanded);
+
+    // Premium scroll locking when mobile menu is active
+    if (navLinks.classList.contains('nav-active')) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
   };
 
   menuToggle.addEventListener('click', toggleMenu);
+  backdrop.addEventListener('click', toggleMenu);
 
   // Close menu when links are clicked
   links.forEach(link => {
@@ -70,7 +83,8 @@ function initMobileMenu() {
   document.addEventListener('click', (e) => {
     if (navLinks.classList.contains('nav-active') && 
         !navLinks.contains(e.target) && 
-        !menuToggle.contains(e.target)) {
+        !menuToggle.contains(e.target) &&
+        !backdrop.contains(e.target)) {
       toggleMenu();
     }
   });
@@ -410,7 +424,14 @@ function initHeroSequence() {
   };
 
   // Listeners
-  window.addEventListener('resize', resizeCanvas);
+  let lastWidth = window.innerWidth;
+  const handleResize = () => {
+    if (window.innerWidth !== lastWidth) {
+      lastWidth = window.innerWidth;
+      resizeCanvas();
+    }
+  };
+  window.addEventListener('resize', handleResize);
   window.addEventListener('scroll', handleScroll, { passive: true });
 
   // Initial draw
