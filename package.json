@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "npx live-server --port=3000 --no-browser",
     "start": "npx live-server",
-    "build": "echo 'Static build complete'"
+    "build": "echo 'Static build complete'",
+    "optimize-images": "node scripts/convert-webp.js"
+  },
+  "dependencies": {
+    "sharp": "^0.33.0"
   },
   "keywords": [
     "luxury",
