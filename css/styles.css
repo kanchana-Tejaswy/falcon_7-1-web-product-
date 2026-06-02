@@ -1129,6 +1129,11 @@ p {
   .footer-top { grid-template-columns: 1fr; }
   .footer-brand { grid-column: span 1; }
   .footer-bottom { flex-direction: column; gap: var(--space-md); text-align: center; }
+
+  /* Soften and expand radial vignette on mobile to reveal full width of horizontal blast */
+  .hero-glow-overlay {
+    background: radial-gradient(circle, rgba(18, 9, 5, 0.3) 0%, rgba(18, 9, 5, 0.9) 115%);
+  }
 }
 
 @media (max-width: 480px) {

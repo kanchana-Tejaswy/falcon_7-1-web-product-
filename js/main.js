@@ -410,8 +410,8 @@ class FalsonEngine {
       const teaser = (window.scrollY === 0) ? Math.sin(Date.now() * 0.0025) * 0.015 : 0;
       const effectiveP = p + teaser;
 
-      const mx = (this.mouse.currX / window.innerWidth - 0.5) * 60;
-      const my = (this.mouse.currY / window.innerHeight - 0.5) * 60;
+      const mx = this.isMobile ? 0 : (this.mouse.currX / window.innerWidth - 0.5) * 60;
+      const my = this.isMobile ? 0 : (this.mouse.currY / window.innerHeight - 0.5) * 60;
       
       this.ui.heroContent.style.transform = `translate3d(${mx}px, ${my}px, 0)`;
 
@@ -456,7 +456,31 @@ class FalsonEngine {
   drawFrame(img) {
     const cw = this.canvas.width, ch = this.canvas.height;
     const iw = img.naturalWidth, ih = img.naturalHeight;
-    const ratio = Math.max(cw / iw, ch / ih);
+    
+    let ratio;
+    if (this.isMobile || ch > cw) {
+      // In portrait/mobile view, standard cover crops the sides of the blast by ~75%.
+      // Instead, we fit the width of the image to the canvas, scaled up by a premium visual scale factor (1.45x).
+      // This keeps the horizontal blast sequence mostly visible on narrow screens while maintaining high visual impact.
+      const fitWidthRatio = cw / iw;
+      ratio = fitWidthRatio * 1.45;
+      
+      // Ensure it doesn't get smaller than 45% of the viewport height to maintain dramatic scale
+      const minHeightRatio = (ch * 0.45) / ih;
+      if (ratio < minHeightRatio) {
+        ratio = minHeightRatio;
+      }
+      
+      // Ensure we never zoom in more than the cover ratio
+      const coverRatio = Math.max(cw / iw, ch / ih);
+      if (ratio > coverRatio) {
+        ratio = coverRatio;
+      }
+    } else {
+      // Desktop / Landscape - Full cinematic coverage
+      ratio = Math.max(cw / iw, ch / ih);
+    }
+    
     const nw = iw * ratio, nh = ih * ratio;
     this.ctx.clearRect(0, 0, cw, ch);
     this.ctx.drawImage(img, (cw - nw) / 2, (ch - nh) / 2, nw, nh);
