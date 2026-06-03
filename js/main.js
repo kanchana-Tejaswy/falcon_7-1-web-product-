@@ -282,6 +282,9 @@ class FalsonEngine {
     this.currentFrameIndex = 0;
     this.introPlaying = false;
     
+    // Set initial size of the canvas buffer immediately to prevent blank renders
+    this.onResize();
+    
     this.loadImages();
 
     window.addEventListener('scroll', () => {
@@ -308,14 +311,25 @@ class FalsonEngine {
   loadImages() {
     for (let i = 0; i < this.frameCount; i++) {
       const img = new Image();
-      img.src = `hero/chocolate blast effect _000/chocolate blast effect _${String(i).padStart(3, '0')}.webp`;
+      img.src = `hero/chocolate_blast_effect_000/chocolate_blast_effect_${String(i).padStart(3, '0')}.webp`;
+      
+      img.onerror = () => {
+        // Fallback to JPG if WebP fails to load
+        if (img.src.endsWith('.webp')) {
+          console.warn(`Failed to load WebP frame: ${i}. Falling back to JPG.`);
+          img.src = img.src.replace('.webp', '.jpg');
+        } else {
+          console.error(`Failed to load JPG fallback for frame: ${i}`);
+        }
+      };
+
       img.onload = () => {
         if (i === 0) this.onResize();
         
         // Redraw current scroll position frame immediately upon load completion to prevent flickering
         if (!this.introPlaying) {
           const currentFrame = Math.min(this.frameCount - 1, Math.floor(this.scroll.current * (this.frameCount - 1)));
-          if (i === currentFrame && i !== this.currentFrameIndex) {
+          if (i === currentFrame) {
             this.drawFrame(img);
             this.currentFrameIndex = i;
           }

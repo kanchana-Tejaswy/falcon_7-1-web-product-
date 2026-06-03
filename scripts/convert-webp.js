@@ -2,7 +2,7 @@ const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
 
-const inputDir = path.join(__dirname, '../hero/chocolate blast effect _000');
+const inputDir = path.join(__dirname, '../hero/chocolate_blast_effect_000');
 const outputDir = inputDir; // Save in the same directory
 
 if (!fs.existsSync(inputDir)) {
