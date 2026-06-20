@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npx live-server --port=3000 --no-browser",
     "start": "npx live-server",
-    "build": "echo 'Static build complete'",
+    "build": "node scripts/build.js",
     "optimize-images": "node scripts/convert-webp.js"
   },
   "dependencies": {
