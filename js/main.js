@@ -311,7 +311,7 @@ class FalsonEngine {
   loadImages() {
     for (let i = 0; i < this.frameCount; i++) {
       const img = new Image();
-      img.src = `hero/chocolate_blast_effect_000/chocolate_blast_effect_${String(i).padStart(3, '0')}.webp`;
+      img.src = `hero/chocolate_blast_effect_000/chocolate_blast_effect__${String(i).padStart(3, '0')}.webp`;
       
       img.onerror = () => {
         // Fallback to JPG if WebP fails to load
